@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { MOCK_SCHEDULE, MOCK_ROUTINES, BODYWEIGHT_FACTORS, MOCK_USER_PROFILE, PRELOADED_EXERCISES } from '@/lib/data';
+import { MOCK_SCHEDULE, MOCK_ROUTINES, BODYWEIGHT_FACTORS, MOCK_USER_PROFILE, PRELOADED_EXERCISES, MOCK_WORKOUT_LOGS } from '@/lib/data';
 import { type Day, type Exercise, type WorkoutLog, type WeeklySchedule, type UserProfile, type WorkoutLogEntry, type SetLog, ALL_DAYS } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { ChevronDown, Pencil, Plus, Trash2 } from 'lucide-react';
@@ -263,7 +263,7 @@ export default function LogPage() {
     if (savedLogs) {
         setLogs(JSON.parse(savedLogs));
     } else {
-        setLogs([]); // Start with no logs
+        setLogs(MOCK_WORKOUT_LOGS);
     }
     const savedProfile = localStorage.getItem('user-profile');
     if (savedProfile) {

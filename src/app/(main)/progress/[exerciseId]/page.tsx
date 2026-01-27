@@ -106,7 +106,7 @@ export default function ExerciseProgressPage({ params }: { params: { exerciseId:
         if (savedLogs) {
             setLogs(JSON.parse(savedLogs));
         } else {
-            setLogs([]);
+            setLogs(MOCK_WORKOUT_LOGS);
         }
 
         const savedRoutines = localStorage.getItem('user-routines');

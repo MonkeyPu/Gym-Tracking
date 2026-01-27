@@ -155,7 +155,7 @@ export default function ProgressPage() {
     if (savedLogs) {
       setLogs(JSON.parse(savedLogs));
     } else {
-      setLogs([]);
+      setLogs(MOCK_WORKOUT_LOGS);
     }
 
     const savedRoutines = localStorage.getItem('user-routines');
