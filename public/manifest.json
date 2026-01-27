@@ -1,18 +1,19 @@
 {
   "name": "Gym Journey",
-  "short_name": "Gym",
+  "short_name": "GymJourney",
+  "description": "Your smart gym workout tracker",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#4B0082",
+  "background_color": "#240046",
   "theme_color": "#4B0082",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

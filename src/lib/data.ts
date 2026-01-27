@@ -68,23 +68,23 @@ const generateRecentLogs = (): WorkoutLog[] => {
     const today = new Date();
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 4; i++) { // Generate logs for the last 4 weeks
         const date = new Date(today);
         date.setDate(today.getDate() - (i * 7));
         const dayOfWeek = days[date.getDay()] as Day;
 
         logs.push({
-            id: `log${i+1}`,
+            id: `log-week-${4-i}`,
             date: date.toISOString().split('T')[0],
             day: dayOfWeek,
             entries: [
                 {
                     exerciseId: 'ex1', // Bench Press
-                    sets: [{ id: `set${i+1}-1`, reps: 10, weight: 45 - (i * 3) }],
+                    sets: [{ id: `set-bp-${4-i}`, reps: 8, weight: 80 - (i * 2.5) }],
                 },
                  {
                     exerciseId: 'ex13', // Squats
-                    sets: [{ id: `set${i+1}-2`, reps: 8, weight: 80 - (i * 5) }],
+                    sets: [{ id: `set-sq-${4-i}`, reps: 6, weight: 110 - (i * 5) }],
                 }
             ],
         });

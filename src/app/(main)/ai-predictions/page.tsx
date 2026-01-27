@@ -113,7 +113,7 @@ export default function AiPredictionsPage() {
             workoutConsistency: 0.85, // 85%
             progressiveOverload: 1.05, // 5% increase
             bodyWeightChange: 0.5, // 0.5kg gain
-            trainingVolume: MOCK_WORKOUT_LOGS.reduce((acc, log) => acc + log.entries.reduce((sum, entry) => sum + entry.sets.reduce((s, set) => s + set.reps * set.weight, 0), 0), 0)
+            trainingVolume: MOCK_WORKOUT_LOGS.reduce((acc, log) => acc + log.entries.reduce((sum, entry) => sum + entry.sets.reduce((s, set) => s + set.reps * set.weight, 0), 0), 0),
         });
         setGrowthResult(result);
     } catch (error) {
