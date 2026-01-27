@@ -2,11 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ClipboardList, TrendingUp, PlusSquare, Trophy, User } from 'lucide-react';
+import { LayoutDashboard, TrendingUp, PlusSquare, Trophy, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { href: '/routine-creator', label: 'Creator', icon: ClipboardList },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/progress', label: 'Progress', icon: TrendingUp },
   { href: '/log', label: 'Log', icon: PlusSquare, isCenter: true },
   { href: '/explore', label: 'Records', icon: Trophy },
