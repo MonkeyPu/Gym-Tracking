@@ -134,6 +134,11 @@ const processMuscleGroupDataForChart = (
 
     const futureSlots = TOTAL_CHART_POINTS - displayData.length;
     if (sortedChartData.length > 1) {
+        const lastPerformanceIndex = displayData.length - 1;
+        if (lastPerformanceIndex >= 0 && displayData[lastPerformanceIndex].performance !== null) {
+            displayData[lastPerformanceIndex].prediction = displayData[lastPerformanceIndex].performance;
+        }
+
         const lastHistoricalIndex = regressionPoints.length - 1;
         let lastValue = sortedChartData.at(-1)!.performance;
         
@@ -169,7 +174,7 @@ const chartConfig = {
       color: 'hsl(var(--primary))',
     },
     prediction: {
-        label: 'Prediction',
+        label: 'Prediction (kg)',
         color: 'hsl(var(--primary))'
     }
 } satisfies ChartConfig;
@@ -187,6 +192,7 @@ export default function ProgressPage() {
 
 
   useEffect(() => {
+    // Always start with the mock data to ensure the latest changes are shown.
     setLogs(MOCK_WORKOUT_LOGS);
 
     const savedRoutines = localStorage.getItem('user-routines');
