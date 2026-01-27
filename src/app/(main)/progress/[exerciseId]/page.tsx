@@ -26,6 +26,13 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from '@/components/ui/chart';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { calculateLinearRegression } from '@/lib/predictions';
+
+const PREDICTION_POINTS = 3;
+const HISTORY_POINTS = 4;
+const TOTAL_CHART_POINTS = HISTORY_POINTS + PREDICTION_POINTS;
 
 const processExerciseDataForChart = (logs: WorkoutLog[], exerciseId: string, exercise: Exercise | undefined, userWeight: number) => {
     if (!exercise) return [];
@@ -66,23 +73,47 @@ const processExerciseDataForChart = (logs: WorkoutLog[], exerciseId: string, exe
     }))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-    const totalPoints = 7;
-    const middleIndex = Math.floor(totalPoints / 2); // 3
+    const regressionPoints = sortedChartData.slice(-6).map((p, i) => ({ x: i, y: p.performance }));
+    const { slope, intercept } = calculateLinearRegression(regressionPoints);
 
-    const pointsToTake = middleIndex + 1; // 4
-    const recentLogs = sortedChartData.slice(-pointsToTake);
+    const displayData: { date: string; performance: number | null; prediction: number | null; formattedDate: string }[] = [];
+    const recentLogs = sortedChartData.slice(-HISTORY_POINTS);
 
-    const displayData: {date: string, performance: number | null, formattedDate: string}[] = [];
-    const emptyPastSlots = pointsToTake - recentLogs.length;
+    const emptyPastSlots = HISTORY_POINTS - recentLogs.length;
     for (let i = 0; i < emptyPastSlots; i++) {
-        displayData.push({ date: `past-empty-${i}`, performance: null, formattedDate: '' });
+        displayData.push({ date: `past-empty-${i}`, performance: null, prediction: null, formattedDate: '' });
     }
 
-    displayData.push(...recentLogs);
+    recentLogs.forEach(log => {
+        displayData.push({ ...log, prediction: null });
+    });
 
-    const futureSlots = totalPoints - displayData.length;
-    for (let i = 0; i < futureSlots; i++) {
-        displayData.push({ date: `future-empty-${i}`, performance: null, formattedDate: '' });
+    const futureSlots = TOTAL_CHART_POINTS - displayData.length;
+    if (sortedChartData.length > 1) {
+        const lastHistoricalIndex = regressionPoints.length - 1;
+        let lastValue = sortedChartData.at(-1)!.performance;
+        
+        for (let i = 1; i <= futureSlots; i++) {
+            const predictionX = lastHistoricalIndex + i;
+            let predictedPerformance = (slope * predictionX) + intercept;
+            
+            predictedPerformance = Math.max(predictedPerformance, lastValue);
+            
+            const futureDate = new Date(sortedChartData.at(-1)!.date);
+            futureDate.setDate(futureDate.getDate() + 7 * i);
+            
+            displayData.push({
+                date: `future-${i}`,
+                performance: null,
+                prediction: Math.round(predictedPerformance),
+                formattedDate: futureDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+            });
+            lastValue = predictedPerformance;
+        }
+    } else {
+         for (let i = 0; i < futureSlots; i++) {
+            displayData.push({ date: `future-empty-${i}`, performance: null, prediction: null, formattedDate: '' });
+        }
     }
 
     return displayData;
@@ -93,17 +124,20 @@ const chartConfig = {
       label: 'Est. 10RM (kg)',
       color: 'hsl(var(--primary))',
     },
+    prediction: {
+        label: 'Prediction',
+        color: 'hsl(var(--primary))',
+    }
 } satisfies ChartConfig;
 
 export default function ExerciseProgressPage({ params }: { params: { exerciseId: string } }) {
-    const [logs, setLogs] = useState<WorkoutLog[]>(MOCK_WORKOUT_LOGS);
+    const [logs, setLogs] = useState<WorkoutLog[]>([]);
     const [allExercises, setAllExercises] = useState<Exercise[]>([]);
     const [userProfile, setUserProfile] = useState<UserProfile>(MOCK_USER_PROFILE);
+    const [showPredictions, setShowPredictions] = useState(true);
     const { exerciseId } = params;
 
     useEffect(() => {
-        // Always start with the mock data to ensure the latest changes are shown.
-        // In a real app, you'd have a more robust data seeding or migration strategy.
         setLogs(MOCK_WORKOUT_LOGS);
 
         const savedRoutines = localStorage.getItem('user-routines');
@@ -152,11 +186,17 @@ export default function ExerciseProgressPage({ params }: { params: { exerciseId:
                 <Link href="/progress"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Progress</Link>
             </Button>
             <Card>
-                <CardHeader>
-                    <CardTitle className="text-2xl font-bold font-headline">{exercise.name} Progress</CardTitle>
-                    <CardDescription>
-                        Average estimated 10-rep max (e10RM) progression.
-                    </CardDescription>
+                <CardHeader className="flex-row items-start justify-between">
+                    <div>
+                        <CardTitle className="text-2xl font-bold font-headline">{exercise.name} Progress</CardTitle>
+                        <CardDescription>
+                            Average estimated 10-rep max (e10RM) progression.
+                        </CardDescription>
+                    </div>
+                     <div className="flex items-center space-x-2">
+                        <Switch id="show-predictions" checked={showPredictions} onCheckedChange={setShowPredictions} />
+                        <Label htmlFor="show-predictions">Show Predictions</Label>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     {hasData ? (
@@ -192,6 +232,18 @@ export default function ExerciseProgressPage({ params }: { params: { exerciseId:
                                     activeDot={{ r: 8 }}
                                     connectNulls={false}
                                 />
+                                {showPredictions && (
+                                    <Line
+                                        dataKey="prediction"
+                                        type="monotone"
+                                        stroke="var(--color-prediction)"
+                                        strokeWidth={3}
+                                        strokeDasharray="5 5"
+                                        dot={{ r: 5, fill: 'var(--color-prediction)', stroke: 'var(--background)' }}
+                                        activeDot={{ r: 8 }}
+                                        connectNulls={false}
+                                    />
+                                )}
                             </LineChart>
                         </ChartContainer>
                     ) : (
