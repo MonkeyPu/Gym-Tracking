@@ -55,7 +55,7 @@ const processExerciseDataForChart = (logs: WorkoutLog[], exerciseId: string, exe
         }
     });
     
-    const chartData = Array.from(performanceByDate.entries())
+    const sortedChartData = Array.from(performanceByDate.entries())
     .map(([date, performance]) => ({
       date,
       performance: Math.round(performance),
@@ -66,7 +66,26 @@ const processExerciseDataForChart = (logs: WorkoutLog[], exerciseId: string, exe
     }))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-    return chartData.slice(-6);
+    const totalPoints = 7;
+    const middleIndex = Math.floor(totalPoints / 2); // 3
+
+    const pointsToTake = middleIndex + 1; // 4
+    const recentLogs = sortedChartData.slice(-pointsToTake);
+
+    const displayData: {date: string, performance: number | null, formattedDate: string}[] = [];
+    const emptyPastSlots = pointsToTake - recentLogs.length;
+    for (let i = 0; i < emptyPastSlots; i++) {
+        displayData.push({ date: `past-empty-${i}`, performance: null, formattedDate: '' });
+    }
+
+    displayData.push(...recentLogs);
+
+    const futureSlots = totalPoints - displayData.length;
+    for (let i = 0; i < futureSlots; i++) {
+        displayData.push({ date: `future-empty-${i}`, performance: null, formattedDate: '' });
+    }
+
+    return displayData;
 };
 
 const chartConfig = {
@@ -128,6 +147,8 @@ export default function ExerciseProgressPage({ params }: { params: { exerciseId:
         )
     }
 
+    const hasData = chartData.some(d => d.performance !== null);
+
     return (
         <div className="space-y-4">
              <Button asChild variant="ghost" size="sm">
@@ -141,7 +162,7 @@ export default function ExerciseProgressPage({ params }: { params: { exerciseId:
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    {chartData.length > 0 ? (
+                    {hasData ? (
                         <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
                              <LineChart
                                 data={chartData}
@@ -172,6 +193,7 @@ export default function ExerciseProgressPage({ params }: { params: { exerciseId:
                                     strokeWidth={3}
                                     dot={{ r: 5, fill: 'var(--color-performance)', stroke: 'var(--background)' }}
                                     activeDot={{ r: 8 }}
+                                    connectNulls={false}
                                 />
                             </LineChart>
                         </ChartContainer>
