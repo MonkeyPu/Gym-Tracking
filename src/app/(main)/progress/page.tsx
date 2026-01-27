@@ -145,18 +145,15 @@ export default function ProgressPage() {
   );
   const [muscleGroupSearch, setMuscleSearch] = useState('');
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
-  const [logs, setLogs] = useState<WorkoutLog[]>([]);
+  const [logs, setLogs] = useState<WorkoutLog[]>(MOCK_WORKOUT_LOGS);
   const [allExercises, setAllExercises] = useState<Exercise[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile>(MOCK_USER_PROFILE);
 
 
   useEffect(() => {
-    const savedLogs = localStorage.getItem('user-workout-logs');
-    if (savedLogs) {
-      setLogs(JSON.parse(savedLogs));
-    } else {
-      setLogs(MOCK_WORKOUT_LOGS);
-    }
+    // Always start with the mock data to ensure the latest changes are shown.
+    // In a real app, you'd have a more robust data seeding or migration strategy.
+    setLogs(MOCK_WORKOUT_LOGS);
 
     const savedRoutines = localStorage.getItem('user-routines');
     const allExercisesMap = new Map<string, Exercise>();

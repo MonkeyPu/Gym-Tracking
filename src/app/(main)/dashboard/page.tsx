@@ -124,7 +124,15 @@ const WeeklyScheduleCard = () => {
 };
 
 const RecentActivityCard = () => {
-    const lastWorkout = MOCK_WORKOUT_LOGS.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+    const [logs, setLogs] = useState(MOCK_WORKOUT_LOGS);
+
+    useEffect(() => {
+        // Always start with the mock data to ensure the latest changes are shown.
+        // In a real app, you'd have a more robust data seeding or migration strategy.
+        setLogs(MOCK_WORKOUT_LOGS);
+    }, []);
+
+    const lastWorkout = logs.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
 
     return (
         <Card>
