@@ -65,8 +65,8 @@ export const MOCK_USER_PROFILE: UserProfile = {
 export const MOCK_WORKOUT_LOGS: WorkoutLog[] = [
     {
       id: 'log1',
-      date: '2024-01-12',
-      day: 'Friday',
+      date: '2024-07-01',
+      day: 'Monday',
       entries: [
         {
           exerciseId: 'ex1', // Bench Press
@@ -76,8 +76,8 @@ export const MOCK_WORKOUT_LOGS: WorkoutLog[] = [
     },
     {
       id: 'log2',
-      date: '2024-01-19',
-      day: 'Friday',
+      date: '2024-07-08',
+      day: 'Monday',
       entries: [
         {
           exerciseId: 'ex1', // Bench Press
@@ -87,8 +87,8 @@ export const MOCK_WORKOUT_LOGS: WorkoutLog[] = [
     },
     {
       id: 'log3',
-      date: '2024-01-24',
-      day: 'Wednesday',
+      date: '2024-07-15',
+      day: 'Monday',
       entries: [
         {
           exerciseId: 'ex1', // Bench Press
@@ -98,8 +98,8 @@ export const MOCK_WORKOUT_LOGS: WorkoutLog[] = [
     },
     {
       id: 'log4',
-      date: '2024-01-27',
-      day: 'Saturday',
+      date: '2024-07-22',
+      day: 'Monday',
       entries: [
         {
           exerciseId: 'ex1', // Bench Press
