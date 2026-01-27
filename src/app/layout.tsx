@@ -5,6 +5,8 @@ import { Toaster } from '@/components/ui/toaster';
 export const metadata: Metadata = {
   title: 'Gym Journey',
   description: 'Your smart gym workout tracker',
+  manifest: '/manifest.json',
+  themeColor: '#000000',
 };
 
 export default function RootLayout({
