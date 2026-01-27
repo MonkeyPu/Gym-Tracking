@@ -66,31 +66,39 @@ export const MOCK_USER_PROFILE: UserProfile = {
 const generateRecentLogs = (): WorkoutLog[] => {
     const logs: WorkoutLog[] = [];
     const today = new Date();
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    
+    // Use a consistent starting day for determinism, e.g., last Sunday
+    const lastSunday = new Date(today);
+    lastSunday.setDate(today.getDate() - today.getDay());
 
-    for (let i = 0; i < 4; i++) { // Generate logs for the last 4 weeks
-        const date = new Date(today);
-        date.setDate(today.getDate() - (i * 7));
-        const dayOfWeek = days[date.getDay()] as Day;
+    for (let i = 28; i > 0; i--) { // Generate logs for the last 28 days
+        const date = new Date(lastSunday);
+        date.setDate(lastSunday.getDate() - i);
+        const dayOfWeek = ALL_DAYS[date.getDay()];
 
-        logs.push({
-            id: `log-week-${4-i}`,
-            date: date.toISOString().split('T')[0],
-            day: dayOfWeek,
-            entries: [
-                {
-                    exerciseId: 'ex1', // Bench Press
-                    sets: [{ id: `set-bp-${4-i}`, reps: 8, weight: 80 - (i * 2.5) }],
-                },
-                 {
-                    exerciseId: 'ex13', // Squats
-                    sets: [{ id: `set-sq-${4-i}`, reps: 6, weight: 110 - (i * 5) }],
-                }
-            ],
-        });
+        const scheduleForDay = MOCK_SCHEDULE[dayOfWeek as Day];
+        if (scheduleForDay && scheduleForDay[0] !== 'Rest') {
+             logs.push({
+                id: `log-day-${28-i}`,
+                date: date.toISOString().split('T')[0],
+                day: dayOfWeek as Day,
+                entries: [
+                    {
+                        exerciseId: 'ex1', // Bench Press
+                        sets: [{ id: `set-bp-${28-i}`, reps: 8, weight: 75 + (i/7) * 1.5 }],
+                    },
+                     {
+                        exerciseId: 'ex13', // Squats
+                        sets: [{ id: `set-sq-${28-i}`, reps: 6, weight: 100 + (i/7) * 2.5 }],
+                    }
+                ],
+            });
+        }
     }
-    return logs.reverse(); // To have dates in ascending order
+    return logs;
 };
+
+export const ALL_DAYS: Day[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 
 export const MOCK_WORKOUT_LOGS: WorkoutLog[] = generateRecentLogs();
