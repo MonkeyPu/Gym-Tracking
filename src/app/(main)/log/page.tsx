@@ -195,19 +195,19 @@ const ExerciseLogger = ({ exercise, selectedDay, logs, setLogs, userWeight }: { 
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[80px]">Set</TableHead>
-                            <TableHead>Reps</TableHead>
-                            <TableHead>Weight (kg)</TableHead>
-                            <TableHead className="w-[50px]"></TableHead>
+                            <TableHead className="w-[60px] px-2">Set</TableHead>
+                            <TableHead className="px-2">Reps</TableHead>
+                            <TableHead className="px-2">Weight (kg)</TableHead>
+                            <TableHead className="w-[50px] px-1"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {setsToRender.map((set, index) => (
                             <TableRow key={set.id}>
-                                <TableCell className="font-medium">{index + 1}</TableCell>
-                                <TableCell><Input type="number" value={set.reps} onChange={(e) => handleSetChange(index, 'reps', e.target.value)} className="h-8" /></TableCell>
-                                <TableCell><Input type="number" value={set.weight} onChange={(e) => handleSetChange(index, 'weight', e.target.value)} className="h-8"/></TableCell>
-                                <TableCell>
+                                <TableCell className="font-medium text-center p-2">{index + 1}</TableCell>
+                                <TableCell className="p-1"><Input type="number" value={set.reps} onChange={(e) => handleSetChange(index, 'reps', e.target.value)} className="h-9 text-center" /></TableCell>
+                                <TableCell className="p-1"><Input type="number" value={set.weight} onChange={(e) => handleSetChange(index, 'weight', e.target.value)} className="h-9 text-center"/></TableCell>
+                                <TableCell className="p-1">
                                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleDeleteSet(index)}>
                                         <Trash2 className="h-4 w-4" />
                                     </Button>
