@@ -1,0 +1,34 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "A person working out in a modern gym",
+      "imageUrl": "https://images.unsplash.com/photo-1599058917212-d750089bc07e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxneW0lMjB3b3Jrb3V0fGVufDB8fHx8MTc2OTE4MTcyN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gym workout"
+    },
+    {
+      "id": "avatar",
+      "description": "A person's profile picture",
+      "imageUrl": "https://images.unsplash.com/photo-1590905707155-17c680dd7867?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cG9ydHJhaXQlMjBwZXJzb258ZW58MHx8fHwxNzY5MTQ2NTE2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "portrait person"
+    },
+    {
+      "id": "bench-press",
+      "description": "A person doing bench press",
+      "imageUrl": "https://images.unsplash.com/photo-1652363722833-509b3aac287b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxiZW5jaCUyMHByZXNzfGVufDB8fHx8MTc2OTEwMDY4OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bench press"
+    },
+    {
+      "id": "squat",
+      "description": "A person doing squats",
+      "imageUrl": "https://images.unsplash.com/photo-1541600383005-565c949cf777?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzcXVhdCUyMGZpdG5lc3N8ZW58MHx8fHwxNzY5MTc2NTczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "squat fitness"
+    },
+    {
+      "id": "dumbbell-curl",
+      "description": "A person doing dumbbell curls",
+      "imageUrl": "https://images.unsplash.com/photo-1662386392891-688364c5a5d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkdW1iYmVsbCUyMHdvcmtvdXR8ZW58MHx8fHwxNzY5MjAxMjc3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dumbbell workout"
+    }
+  ]
+}
