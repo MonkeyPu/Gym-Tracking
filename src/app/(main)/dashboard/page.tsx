@@ -129,9 +129,12 @@ const RecentActivityCard = () => {
     const [logs, setLogs] = useState(MOCK_WORKOUT_LOGS);
 
     useEffect(() => {
-        // Always start with the mock data to ensure the latest changes are shown.
-        // In a real app, you'd have a more robust data seeding or migration strategy.
-        setLogs(MOCK_WORKOUT_LOGS);
+        const savedLogs = localStorage.getItem('user-workout-logs');
+        if (savedLogs) {
+            setLogs(JSON.parse(savedLogs));
+        } else {
+            setLogs(MOCK_WORKOUT_LOGS);
+        }
     }, []);
 
     const lastWorkout = logs.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
@@ -147,7 +150,7 @@ const RecentActivityCard = () => {
                     <div>
                         <p className="font-semibold">{lastWorkout.day} - {new Date(lastWorkout.date).toLocaleDateString()}</p>
                         <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                            {lastWorkout.entries.map(entry => (
+                            {lastWorkout.entries.slice(0,3).map(entry => (
                                 <li key={entry.exerciseId}>- {entry.sets.length} sets of exercise {entry.exerciseId}</li>
                             ))}
                         </ul>

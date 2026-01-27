@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Gym Journey',
   description: 'Your smart gym workout tracker',
   manifest: '/manifest.json',
-  themeColor: '#000000',
+  themeColor: '#4B0082',
 };
 
 export default function RootLayout({

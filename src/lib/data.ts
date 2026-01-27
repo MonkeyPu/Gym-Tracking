@@ -62,52 +62,38 @@ export const MOCK_USER_PROFILE: UserProfile = {
   age: 28,
 };
 
-export const MOCK_WORKOUT_LOGS: WorkoutLog[] = [
-    {
-      id: 'log1',
-      date: '2024-07-01',
-      day: 'Monday',
-      entries: [
-        {
-          exerciseId: 'ex1', // Bench Press
-          sets: [{ id: 'set1-1', reps: 10, weight: 39 }],
-        },
-      ],
-    },
-    {
-      id: 'log2',
-      date: '2024-07-08',
-      day: 'Monday',
-      entries: [
-        {
-          exerciseId: 'ex1', // Bench Press
-          sets: [{ id: 'set2-1', reps: 10, weight: 42 }],
-        },
-      ],
-    },
-    {
-      id: 'log3',
-      date: '2024-07-15',
-      day: 'Monday',
-      entries: [
-        {
-          exerciseId: 'ex1', // Bench Press
-          sets: [{ id: 'set3-1', reps: 10, weight: 45 }],
-        },
-      ],
-    },
-    {
-      id: 'log4',
-      date: '2024-07-22',
-      day: 'Monday',
-      entries: [
-        {
-          exerciseId: 'ex1', // Bench Press
-          sets: [{ id: 'set4-1', reps: 10, weight: 45 }],
-        },
-      ],
-    },
-  ];
+// Generates more recent workout logs for better chart visualization
+const generateRecentLogs = (): WorkoutLog[] => {
+    const logs: WorkoutLog[] = [];
+    const today = new Date();
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    for (let i = 0; i < 4; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - (i * 7));
+        const dayOfWeek = days[date.getDay()] as Day;
+
+        logs.push({
+            id: `log${i+1}`,
+            date: date.toISOString().split('T')[0],
+            day: dayOfWeek,
+            entries: [
+                {
+                    exerciseId: 'ex1', // Bench Press
+                    sets: [{ id: `set${i+1}-1`, reps: 10, weight: 45 - (i * 3) }],
+                },
+                 {
+                    exerciseId: 'ex13', // Squats
+                    sets: [{ id: `set${i+1}-2`, reps: 8, weight: 80 - (i * 5) }],
+                }
+            ],
+        });
+    }
+    return logs.reverse(); // To have dates in ascending order
+};
+
+
+export const MOCK_WORKOUT_LOGS: WorkoutLog[] = generateRecentLogs();
 
 export const MUSCLE_GROUPS = [
     'Chest', 
@@ -127,7 +113,7 @@ export const MUSCLE_GROUPS = [
 export const MOCK_ROUTINES: { [key in Day]?: Exercise[] } = {
   Monday: [PRELOADED_EXERCISES[0], PRELOADED_EXERCISES[1]],
   Tuesday: [PRELOADED_EXERCISES[4], PRELOADED_EXERCISES[6]],
-  Wednesday: [PRELOADED_EXERCISES[14]],
-  Thursday: [PRELOADED_EXERCISES[20], PRELOADED_EXERCISES[21]],
-  Friday: [PRELOADED_EXERCISES[9], PRELOADED_EXERCISES[10]],
+  Wednesday: [PRELOADED_EXERCISES[13], PRELOADED_EXERCISES[14]],
+  Thursday: [PRELOADED_EXERCISES[17], PRELOADED_EXERCISES[18]],
+  Friday: [PRELOADED_EXERCISES[9], PRELOADED_EXERCISES[11]],
 };

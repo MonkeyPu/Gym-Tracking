@@ -1,10 +1,10 @@
 {
-  "name": "Gym Tracker",
+  "name": "Gym Journey",
   "short_name": "Gym",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#4B0082",
+  "theme_color": "#4B0082",
   "icons": [
     {
       "src": "/icon-192.png",

@@ -2,14 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, TrendingUp, PlusSquare, Trophy, User } from 'lucide-react';
+import { LayoutDashboard, TrendingUp, PlusSquare, Sparkles, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/progress', label: 'Progress', icon: TrendingUp },
   { href: '/log', label: 'Log', icon: PlusSquare, isCenter: true },
-  { href: '/explore', label: 'Records', icon: Trophy },
+  { href: '/ai-predictions', label: 'AI', icon: Sparkles },
   { href: '/profile', label: 'Profile', icon: User },
 ];
 
