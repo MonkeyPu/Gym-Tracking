@@ -80,7 +80,7 @@ const ExerciseLogger = ({ exercise, selectedDay, logs, setLogs, userWeight }: { 
     const handleSetChange = (setIndex: number, field: 'reps' | 'weight', value: string) => {
         const newLogs: WorkoutLog[] = JSON.parse(JSON.stringify(logs));
         const todayDate = new Date().toISOString().split('T')[0];
-        let logToUpdate = newLogs.find((l: WorkoutLog) => l.day === selectedDay && l.date === todayDate);
+        let logToUpdate = newLogs.find((l: WorkoutLog) => l.date === todayDate);
         
         if (!logToUpdate) {
              logToUpdate = {
@@ -125,7 +125,7 @@ const ExerciseLogger = ({ exercise, selectedDay, logs, setLogs, userWeight }: { 
     const handleAddSet = () => {
         const newLogs: WorkoutLog[] = JSON.parse(JSON.stringify(logs));
         const todayDate = new Date().toISOString().split('T')[0];
-        let logToUpdate = newLogs.find((l: WorkoutLog) => l.day === selectedDay && l.date === todayDate);
+        let logToUpdate = newLogs.find((l: WorkoutLog) => l.date === todayDate);
 
         if (!logToUpdate) {
             logToUpdate = {
@@ -160,7 +160,7 @@ const ExerciseLogger = ({ exercise, selectedDay, logs, setLogs, userWeight }: { 
     const handleDeleteSet = (setIndex: number) => {
         const newLogs = JSON.parse(JSON.stringify(logs));
         const todayDate = new Date().toISOString().split('T')[0];
-        const logToUpdate = newLogs.find((l: WorkoutLog) => l.day === selectedDay && l.date === todayDate);
+        const logToUpdate = newLogs.find((l: WorkoutLog) => l.date === todayDate);
         if (!logToUpdate) return;
 
         const entryToUpdate = logToUpdate.entries.find((e: WorkoutLogEntry) => e.exerciseId === exercise.id);

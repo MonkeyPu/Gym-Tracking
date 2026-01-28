@@ -36,7 +36,7 @@ const HISTORY_POINTS = 4;
 const processExerciseDataForChart = (logs: WorkoutLog[], exerciseId: string, exercise: Exercise | undefined, userWeight: number) => {
     if (!exercise) return [];
     
-    const performanceByDate = new Map<string, number>();
+    const performanceByDate = new Map<string, number[]>();
 
     logs.forEach((log) => {
         const entry = log.entries.find(e => e.exerciseId === exerciseId);
@@ -56,15 +56,18 @@ const processExerciseDataForChart = (logs: WorkoutLog[], exerciseId: string, exe
 
             if (set10RMs.length > 0) {
                 const average10RM = set10RMs.reduce((sum, val) => sum + val, 0) / set10RMs.length;
-                performanceByDate.set(log.date, average10RM);
+                if (!performanceByDate.has(log.date)) {
+                    performanceByDate.set(log.date, []);
+                }
+                performanceByDate.get(log.date)!.push(average10RM);
             }
         }
     });
     
     const sortedChartData = Array.from(performanceByDate.entries())
-    .map(([date, performance]) => ({
+    .map(([date, performances]) => ({
       date,
-      performance: Math.round(performance),
+      performance: Math.round(performances.reduce((sum, val) => sum + val, 0) / performances.length),
       formattedDate: new Date(date).toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
