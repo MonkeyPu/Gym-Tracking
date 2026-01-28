@@ -7,14 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { MOCK_SCHEDULE } from '@/lib/data';
 import { ALL_DAYS, WeeklySchedule } from '@/lib/types';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function DashboardPage() {
-  const [schedule, setSchedule] = useState<WeeklySchedule>(MOCK_SCHEDULE);
+  const [schedule, setSchedule] = useState<WeeklySchedule>({});
 
   useEffect(() => {
     const savedSchedule = localStorage.getItem('user-schedule');

@@ -12,12 +12,13 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { MOCK_USER_PROFILE } from '@/lib/data';
 import { UserProfile } from '@/lib/types';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<UserProfile>(MOCK_USER_PROFILE);
+  const [profile, setProfile] = useState<UserProfile>({ name: '', weight: 0, height: 0 });
   const [isLoaded, setIsLoaded] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const savedProfile = localStorage.getItem('user-profile');
@@ -29,13 +30,17 @@ export default function ProfilePage() {
 
   const handleSave = () => {
     localStorage.setItem('user-profile', JSON.stringify(profile));
+    toast({
+        title: "Profile Saved",
+        description: "Your profile has been updated.",
+    })
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
     setProfile((prev) => ({
       ...prev,
-      [name]: value ? Number(value) : 0,
+      [name]: type === 'number' ? (value ? Number(value) : 0) : value,
     }));
   };
 
@@ -51,13 +56,24 @@ export default function ProfilePage() {
           <CardDescription>Update your personal information.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+           <div className="space-y-2">
+            <Label htmlFor="name">Name</Label>
+            <Input
+              id="name"
+              name="name"
+              type="text"
+              value={profile.name}
+              onChange={handleChange}
+              placeholder="e.g., Alex"
+            />
+          </div>
           <div className="space-y-2">
             <Label htmlFor="weight">Weight (kg)</Label>
             <Input
               id="weight"
               name="weight"
               type="number"
-              value={profile.weight}
+              value={profile.weight || ''}
               onChange={handleChange}
               placeholder="e.g., 85"
             />
@@ -68,7 +84,7 @@ export default function ProfilePage() {
               id="height"
               name="height"
               type="number"
-              value={profile.height}
+              value={profile.height || ''}
               onChange={handleChange}
               placeholder="e.g., 180"
             />

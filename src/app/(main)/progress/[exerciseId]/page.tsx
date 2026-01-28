@@ -18,7 +18,7 @@ import {
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft, TrendingUp } from 'lucide-react';
-import { MOCK_WORKOUT_LOGS, PRELOADED_EXERCISES, BODYWEIGHT_FACTORS, MOCK_USER_PROFILE } from '@/lib/data';
+import { PRELOADED_EXERCISES, BODYWEIGHT_FACTORS } from '@/lib/data';
 import { type WorkoutLog, type Exercise, type UserProfile } from '@/lib/types';
 import {
     ChartConfig,
@@ -138,12 +138,15 @@ const chartConfig = {
 export default function ExerciseProgressPage({ params }: { params: { exerciseId: string } }) {
     const [logs, setLogs] = useState<WorkoutLog[]>([]);
     const [allExercises, setAllExercises] = useState<Exercise[]>([]);
-    const [userProfile, setUserProfile] = useState<UserProfile>(MOCK_USER_PROFILE);
+    const [userProfile, setUserProfile] = useState<UserProfile>({ name: '', weight: 0, height: 0 });
     const [showPredictions, setShowPredictions] = useState(true);
     const { exerciseId } = params;
 
     useEffect(() => {
-        setLogs(MOCK_WORKOUT_LOGS);
+        const savedLogs = localStorage.getItem('user-workout-logs');
+        if (savedLogs) {
+          setLogs(JSON.parse(savedLogs));
+        }
 
         const savedRoutines = localStorage.getItem('user-routines');
         const allExercisesMap = new Map<string, Exercise>();

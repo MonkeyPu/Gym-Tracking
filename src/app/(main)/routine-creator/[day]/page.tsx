@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { MOCK_SCHEDULE, MUSCLE_GROUPS, PRELOADED_EXERCISES, MOCK_ROUTINES } from '@/lib/data';
+import { MUSCLE_GROUPS, PRELOADED_EXERCISES } from '@/lib/data';
 import { type Day, type WeeklySchedule, type Exercise } from '@/lib/types';
 import { PlusCircle, Trash2, Search, ArrowLeft, ChevronsUpDown, Check } from 'lucide-react';
 import Image from 'next/image';
@@ -23,6 +23,12 @@ function EditDayWorkout({ day, schedule, onSave, children }: { day: Day; schedul
   const [isOpen, setIsOpen] = useState(false);
   const [selectedGroups, setSelectedGroups] = useState<string[]>(schedule.filter(s => s !== 'Rest'));
   const [other, setOther] = useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+        setSelectedGroups(schedule.filter(s => s !== 'Rest'));
+    }
+  }, [isOpen, schedule]);
 
   const handleCheckboxChange = (group: string, checked: boolean | 'indeterminate') => {
     setSelectedGroups(prev => checked ? [...prev, group] : prev.filter(g => g !== group));
@@ -95,6 +101,7 @@ function AddExerciseDialog({ onAddExercise }: { onAddExercise: (exercise: Exerci
   const handleAddPreloaded = (exercise: Exercise) => {
     onAddExercise(exercise);
     setIsOpen(false);
+    setSearchTerm('');
   };
 
   const handleAddCustom = () => {
@@ -217,7 +224,7 @@ function AddExerciseDialog({ onAddExercise }: { onAddExercise: (exercise: Exerci
 export default function DayRoutinePage({ params }: { params: { day: string } }) {
   const day = params.day.charAt(0).toUpperCase() + params.day.slice(1) as Day;
   
-  const [schedule, setSchedule] = useState<WeeklySchedule>(MOCK_SCHEDULE);
+  const [schedule, setSchedule] = useState<WeeklySchedule>({});
   const [routine, setRoutine] = useState<Exercise[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -230,9 +237,7 @@ export default function DayRoutinePage({ params }: { params: { day: string } }) 
     const savedRoutines = localStorage.getItem('user-routines');
     if (savedRoutines) {
         const parsedRoutines = JSON.parse(savedRoutines);
-        setRoutine(parsedRoutines[day] || MOCK_ROUTINES[day] || []);
-    } else {
-        setRoutine(MOCK_ROUTINES[day] || []);
+        setRoutine(parsedRoutines[day] || []);
     }
     setIsLoaded(true);
   }, [day]);
@@ -258,7 +263,9 @@ export default function DayRoutinePage({ params }: { params: { day: string } }) 
   };
 
   const handleAddExercise = (exercise: Exercise) => {
-    setRoutine(prev => [...prev, exercise]);
+    if (!routine.some(ex => ex.id === exercise.id)) {
+      setRoutine(prev => [...prev, exercise]);
+    }
   };
 
   const handleDeleteExercise = (exerciseId: string) => {

@@ -34,11 +34,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Check, ChevronsUpDown, TrendingUp, ChevronRight, Dumbbell, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
-  MOCK_WORKOUT_LOGS,
   PRELOADED_EXERCISES,
   MUSCLE_GROUPS,
   BODYWEIGHT_FACTORS,
-  MOCK_USER_PROFILE
 } from '@/lib/data';
 import {
   type WorkoutLog,
@@ -187,13 +185,15 @@ export default function ProgressPage() {
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const [logs, setLogs] = useState<WorkoutLog[]>([]);
   const [allExercises, setAllExercises] = useState<Exercise[]>([]);
-  const [userProfile, setUserProfile] = useState<UserProfile>(MOCK_USER_PROFILE);
+  const [userProfile, setUserProfile] = useState<UserProfile>({ name: '', weight: 0, height: 0 });
   const [showPredictions, setShowPredictions] = useState(true);
 
 
   useEffect(() => {
-    // Always start with the mock data to ensure the latest changes are shown.
-    setLogs(MOCK_WORKOUT_LOGS);
+    const savedLogs = localStorage.getItem('user-workout-logs');
+    if (savedLogs) {
+        setLogs(JSON.parse(savedLogs));
+    }
 
     const savedRoutines = localStorage.getItem('user-routines');
     const allExercisesMap = new Map<string, Exercise>();

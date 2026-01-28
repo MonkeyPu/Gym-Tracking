@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { MOCK_SCHEDULE, MOCK_ROUTINES, BODYWEIGHT_FACTORS, MOCK_USER_PROFILE, PRELOADED_EXERCISES, MOCK_WORKOUT_LOGS } from '@/lib/data';
+import { BODYWEIGHT_FACTORS, PRELOADED_EXERCISES } from '@/lib/data';
 import { type Day, type Exercise, type WorkoutLog, type WeeklySchedule, type UserProfile, type WorkoutLogEntry, type SetLog, ALL_DAYS } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { ChevronDown, Pencil, Plus, Trash2 } from 'lucide-react';
@@ -231,17 +231,18 @@ const ExerciseLogger = ({ exercise, selectedDay, logs, setLogs, userWeight }: { 
 
 export default function LogPage() {
   const [selectedDay, setSelectedDay] = useState<Day>(getToday());
-  const [logs, setLogs] = useState<WorkoutLog[]>(MOCK_WORKOUT_LOGS);
+  const [logs, setLogs] = useState<WorkoutLog[]>([]);
   const [isLogsLoaded, setIsLogsLoaded] = useState(false);
-  const [userProfile, setUserProfile] = useState<UserProfile>(MOCK_USER_PROFILE);
+  const [userProfile, setUserProfile] = useState<UserProfile>({ name: '', weight: 0, height: 0 });
 
-  const [schedule, setSchedule] = useState<WeeklySchedule>(MOCK_SCHEDULE);
-  const [routines, setRoutines] = useState<{ [key in Day]?: Exercise[] }>(MOCK_ROUTINES);
+  const [schedule, setSchedule] = useState<WeeklySchedule>({});
+  const [routines, setRoutines] = useState<{ [key in Day]?: Exercise[] }>({});
 
   useEffect(() => {
-    // Always start with the mock data to ensure the latest changes are shown.
-    // In a real app, you'd have a more robust data seeding or migration strategy.
-    setLogs(MOCK_WORKOUT_LOGS);
+    const savedLogs = localStorage.getItem('user-workout-logs');
+    if (savedLogs) {
+      setLogs(JSON.parse(savedLogs));
+    }
 
     const savedSchedule = localStorage.getItem('user-schedule');
     if (savedSchedule) {
@@ -260,9 +261,8 @@ export default function LogPage() {
           }
       });
       setRoutines(allRoutines);
-    } else {
-        setRoutines(MOCK_ROUTINES);
     }
+
     const savedProfile = localStorage.getItem('user-profile');
     if (savedProfile) {
         setUserProfile(JSON.parse(savedProfile));

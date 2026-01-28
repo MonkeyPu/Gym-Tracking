@@ -9,14 +9,13 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MOCK_SCHEDULE } from '@/lib/data';
 import { ALL_DAYS, type WeeklySchedule } from '@/lib/types';
 import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Pencil } from 'lucide-react';
 
 export default function SchedulePage() {
-  const [schedule, setSchedule] = useState<WeeklySchedule>(MOCK_SCHEDULE);
+  const [schedule, setSchedule] = useState<WeeklySchedule>({});
 
   useEffect(() => {
     const savedSchedule = localStorage.getItem('user-schedule');
