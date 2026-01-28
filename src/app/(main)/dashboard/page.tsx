@@ -5,7 +5,6 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from '@/components/ui/card';
 import {
   Activity,
@@ -14,7 +13,6 @@ import {
   Dumbbell,
   Flame,
   PersonStanding,
-  Wand2,
 } from 'lucide-react';
 import { MOCK_SCHEDULE, MOCK_WORKOUT_LOGS } from '@/lib/data';
 import { ALL_DAYS, type Day, type WeeklySchedule } from '@/lib/types';
@@ -163,23 +161,6 @@ const RecentActivityCard = () => {
     )
 }
 
-const AIPredictionCard = () => (
-    <Card>
-        <CardHeader>
-            <CardTitle className="flex items-center gap-2"><Wand2 className="w-6 h-6 text-primary" /> AI Insights</CardTitle>
-            <CardDescription>Workout suggestions & growth estimates.</CardDescription>
-        </CardHeader>
-        <CardContent>
-            <p className="text-sm text-muted-foreground">Leverage AI to generate personalized workout plans and predict your fitness progress based on your data.</p>
-        </CardContent>
-        <CardFooter>
-            <Button asChild>
-                <Link href="/ai-predictions">Explore AI Features</Link>
-            </Button>
-        </CardFooter>
-    </Card>
-);
-
 export default function DashboardPage() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -191,7 +172,6 @@ export default function DashboardPage() {
         </div>
         <div className="space-y-6">
             <RecentActivityCard />
-            <AIPredictionCard />
         </div>
     </div>
   );

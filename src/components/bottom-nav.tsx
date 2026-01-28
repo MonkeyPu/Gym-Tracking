@@ -2,14 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, TrendingUp, PlusSquare, Sparkles, User } from 'lucide-react';
+import { CalendarDays, TrendingUp, PlusSquare, Trophy, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/routine-creator', label: 'Routine', icon: CalendarDays },
   { href: '/progress', label: 'Progress', icon: TrendingUp },
   { href: '/log', label: 'Log', icon: PlusSquare, isCenter: true },
-  { href: '/ai-predictions', label: 'AI', icon: Sparkles },
+  { href: '/explore', label: 'Records', icon: Trophy },
   { href: '/profile', label: 'Profile', icon: User },
 ];
 
@@ -20,7 +20,7 @@ export function BottomNav() {
     <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-[0_-1px_3px_rgba(0,0,0,0.05)] pb-[env(safe-area-inset-bottom)]">
       <div className="flex items-center justify-around h-14 max-w-lg mx-auto">
         {navItems.map((item) => {
-          const isActive = pathname.startsWith(item.href) && (item.href !== '/dashboard' || pathname === '/dashboard');
+          const isActive = pathname.startsWith(item.href) && (item.href !== '/routine-creator' || pathname === '/routine-creator');
           const Icon = item.icon;
           return (
             <Link
