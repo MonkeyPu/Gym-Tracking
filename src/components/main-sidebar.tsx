@@ -14,7 +14,6 @@ import {
   CalendarDays,
   LineChart,
   User,
-  Sparkles,
   Settings,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -24,7 +23,6 @@ const menuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/schedule', label: 'Schedule', icon: CalendarDays },
   { href: '/progress', label: 'Progress', icon: LineChart },
-  { href: '/ai-predictions', label: 'AI Predictions', icon: Sparkles },
   { href: '/profile', label: 'Profile', icon: User },
 ];
 
