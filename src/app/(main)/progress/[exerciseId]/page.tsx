@@ -32,7 +32,6 @@ import { calculateLinearRegression } from '@/lib/predictions';
 
 const PREDICTION_POINTS = 3;
 const HISTORY_POINTS = 4;
-const TOTAL_CHART_POINTS = HISTORY_POINTS + PREDICTION_POINTS;
 
 const processExerciseDataForChart = (logs: WorkoutLog[], exerciseId: string, exercise: Exercise | undefined, userWeight: number) => {
     if (!exercise) return [];
@@ -73,52 +72,48 @@ const processExerciseDataForChart = (logs: WorkoutLog[], exerciseId: string, exe
     }))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-    const regressionPoints = sortedChartData.slice(-6).map((p, i) => ({ x: i, y: p.performance }));
-    const { slope, intercept } = calculateLinearRegression(regressionPoints);
-
-    const displayData: { date: string; performance: number | null; prediction: number | null; formattedDate: string }[] = [];
-    const recentLogs = sortedChartData.slice(-HISTORY_POINTS);
-
-    const emptyPastSlots = HISTORY_POINTS - recentLogs.length;
-    for (let i = 0; i < emptyPastSlots; i++) {
-        displayData.push({ date: `past-empty-${i}`, performance: null, prediction: null, formattedDate: '' });
+    if (sortedChartData.length === 0) {
+        return [];
     }
 
-    recentLogs.forEach(log => {
-        displayData.push({ ...log, prediction: null });
-    });
+    if (sortedChartData.length === 1) {
+        return sortedChartData.map(log => ({ ...log, prediction: null }));
+    }
 
-    const futureSlots = TOTAL_CHART_POINTS - displayData.length;
-    if (sortedChartData.length > 1) {
-        const lastPerformanceIndex = displayData.length - 1;
-        if (lastPerformanceIndex >= 0 && displayData[lastPerformanceIndex].performance !== null) {
-            displayData[lastPerformanceIndex].prediction = displayData[lastPerformanceIndex].performance;
-        }
+    const historicalData = sortedChartData.slice(-HISTORY_POINTS);
+    const displayData: { date: string; performance: number | null; prediction: number | null; formattedDate: string }[] = historicalData.map(log => ({
+        ...log,
+        prediction: null,
+    }));
 
-        const lastHistoricalIndex = regressionPoints.length - 1;
-        let lastValue = sortedChartData.at(-1)!.performance;
+    const regressionPoints = sortedChartData.slice(-6).map((p, i) => ({ x: i, y: p.performance }));
+    const { slope, intercept } = calculateLinearRegression(regressionPoints);
+    
+    if (isNaN(slope) || isNaN(intercept)) {
+        return displayData;
+    }
+    
+    displayData[displayData.length - 1].prediction = displayData[displayData.length - 1].performance;
+
+    const lastHistoricalIndex = regressionPoints.length - 1;
+    let lastValue = sortedChartData.at(-1)!.performance;
+    
+    for (let i = 1; i <= PREDICTION_POINTS; i++) {
+        const predictionX = lastHistoricalIndex + i;
+        let predictedPerformance = (slope * predictionX) + intercept;
         
-        for (let i = 1; i <= futureSlots; i++) {
-            const predictionX = lastHistoricalIndex + i;
-            let predictedPerformance = (slope * predictionX) + intercept;
-            
-            predictedPerformance = Math.max(predictedPerformance, lastValue);
-            
-            const futureDate = new Date(sortedChartData.at(-1)!.date);
-            futureDate.setDate(futureDate.getDate() + 7 * i);
-            
-            displayData.push({
-                date: `future-${i}`,
-                performance: null,
-                prediction: Math.round(predictedPerformance),
-                formattedDate: futureDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-            });
-            lastValue = predictedPerformance;
-        }
-    } else {
-         for (let i = 0; i < futureSlots; i++) {
-            displayData.push({ date: `future-empty-${i}`, performance: null, prediction: null, formattedDate: '' });
-        }
+        predictedPerformance = Math.max(predictedPerformance, lastValue);
+        
+        const futureDate = new Date(sortedChartData.at(-1)!.date);
+        futureDate.setDate(futureDate.getDate() + 7 * i);
+        
+        displayData.push({
+            date: `future-${i}`,
+            performance: null,
+            prediction: Math.round(predictedPerformance),
+            formattedDate: futureDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+        });
+        lastValue = predictedPerformance;
     }
 
     return displayData;
@@ -202,7 +197,7 @@ export default function ExerciseProgressPage({ params }: { params: { exerciseId:
                         </CardDescription>
                     </div>
                      <div className="flex items-center space-x-2">
-                        <Switch id="show-predictions" checked={showPredictions} onCheckedChange={setShowPredictions} />
+                        <Switch id="show-predictions" checked={showPredictions} onCheckedChange={setShowPredictions} disabled={chartData.length < 2} />
                         <Label htmlFor="show-predictions">Show Predictions</Label>
                     </div>
                 </CardHeader>
