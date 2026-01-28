@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { BODYWEIGHT_FACTORS, PRELOADED_EXERCISES } from '@/lib/data';
-import { type Day, type Exercise, type WorkoutLog, type WeeklySchedule, type UserProfile, type WorkoutLogEntry, type SetLog, ALL_DAYS } from '@/lib/types';
+import { BODYWEIGHT_FACTORS, PRELOADED_EXERCISES, ALL_DAYS } from '@/lib/data';
+import { type Day, type Exercise, type WorkoutLog, type WeeklySchedule, type UserProfile, type WorkoutLogEntry, type SetLog } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { ChevronDown, Pencil, Plus, Trash2 } from 'lucide-react';
 
@@ -24,8 +24,24 @@ const dayInitials: { initial: string; full: Day }[] = [
 // Helper to get the current day of the week
 const getToday = (): Day => {
     const dayIndex = new Date().getDay(); // 0 for Sunday, 1 for Monday etc.
-    const reorderedDays: Day[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    return reorderedDays[dayIndex];
+    return ALL_DAYS[dayIndex];
+};
+
+const getISODateForDayOfWeek = (targetDay: Day): string => {
+    const dayMapping: { [key in Day]: number } = {
+        'Sunday': 0, 'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4, 'Friday': 5, 'Saturday': 6,
+    };
+
+    const today = new Date();
+    const currentDayIndex = today.getDay();
+    const targetDayIndex = dayMapping[targetDay];
+    
+    const dayDifference = targetDayIndex - currentDayIndex;
+    
+    const targetDate = new Date(today);
+    targetDate.setDate(today.getDate() + dayDifference);
+    
+    return targetDate.toISOString().split('T')[0];
 };
 
 const calculateExercise10RM = (
@@ -62,9 +78,8 @@ const ExerciseLogger = ({ exercise, selectedDay, logs, setLogs, userWeight }: { 
     const [isOpen, setIsOpen] = useState(false);
 
     const getLogForDay = (day: Day) => {
-        const todayDate = new Date().toISOString().split('T')[0];
-        // This is a simplified approach for mock data. In a real app, you would have a better way to get today's log.
-        return logs.find(log => log.day === day && log.date === todayDate);
+        const logDate = getISODateForDayOfWeek(day);
+        return logs.find(log => log.date === logDate);
     };
 
     const logForDay = getLogForDay(selectedDay);
@@ -79,13 +94,13 @@ const ExerciseLogger = ({ exercise, selectedDay, logs, setLogs, userWeight }: { 
 
     const handleSetChange = (setIndex: number, field: 'reps' | 'weight', value: string) => {
         const newLogs: WorkoutLog[] = JSON.parse(JSON.stringify(logs));
-        const todayDate = new Date().toISOString().split('T')[0];
-        let logToUpdate = newLogs.find((l: WorkoutLog) => l.date === todayDate);
+        const logDate = getISODateForDayOfWeek(selectedDay);
+        let logToUpdate = newLogs.find((l: WorkoutLog) => l.date === logDate);
         
         if (!logToUpdate) {
              logToUpdate = {
                 id: `log-${Date.now()}`,
-                date: todayDate,
+                date: logDate,
                 day: selectedDay,
                 entries: [],
             };
@@ -124,13 +139,13 @@ const ExerciseLogger = ({ exercise, selectedDay, logs, setLogs, userWeight }: { 
 
     const handleAddSet = () => {
         const newLogs: WorkoutLog[] = JSON.parse(JSON.stringify(logs));
-        const todayDate = new Date().toISOString().split('T')[0];
-        let logToUpdate = newLogs.find((l: WorkoutLog) => l.date === todayDate);
+        const logDate = getISODateForDayOfWeek(selectedDay);
+        let logToUpdate = newLogs.find((l: WorkoutLog) => l.date === logDate);
 
         if (!logToUpdate) {
             logToUpdate = {
                 id: `log-${Date.now()}`,
-                date: todayDate,
+                date: logDate,
                 day: selectedDay,
                 entries: [],
             };
@@ -159,8 +174,8 @@ const ExerciseLogger = ({ exercise, selectedDay, logs, setLogs, userWeight }: { 
 
     const handleDeleteSet = (setIndex: number) => {
         const newLogs = JSON.parse(JSON.stringify(logs));
-        const todayDate = new Date().toISOString().split('T')[0];
-        const logToUpdate = newLogs.find((l: WorkoutLog) => l.date === todayDate);
+        const logDate = getISODateForDayOfWeek(selectedDay);
+        const logToUpdate = newLogs.find((l: WorkoutLog) => l.date === logDate);
         if (!logToUpdate) return;
 
         const entryToUpdate = logToUpdate.entries.find((e: WorkoutLogEntry) => e.exerciseId === exercise.id);
@@ -280,8 +295,8 @@ export default function LogPage() {
   const exercisesForDay = routines[selectedDay] || [];
   const isRestDay = workoutForDay.includes('Rest') || exercisesForDay.length === 0;
 
-  const todayDate = new Date().toISOString().split('T')[0];
-  const logForDay = logs.find(log => log.day === selectedDay && log.date === todayDate);
+  const logDateForSelectedDay = getISODateForDayOfWeek(selectedDay);
+  const logForDay = logs.find(log => log.date === logDateForSelectedDay);
 
   const totalWorkout10RM = useMemo(() => {
     if (!logForDay || exercisesForDay.length === 0) return 0;
@@ -318,7 +333,7 @@ export default function LogPage() {
                 )}
               >
                 <span>{initial}</span>
-                {selectedDay === full && <div className="h-0.5 w-full bg-blue-500 rounded-full" />}
+                {selectedDay === full && <div className="h-0.5 w-full bg-primary rounded-full" />}
               </button>
             ))}
           </div>
