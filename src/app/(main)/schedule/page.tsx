@@ -33,7 +33,7 @@ export default function SchedulePage() {
         <AlertDescription>
           You can now build your full routine in the Routine Creator.
           <Button asChild variant="link" className="p-0 h-auto ml-1">
-            <Link href="/routine-creator">Go to Routine Creator</Link>
+            <Link href="/dashboard">Go to Routine Creator</Link>
           </Button>
         </AlertDescription>
       </Alert>

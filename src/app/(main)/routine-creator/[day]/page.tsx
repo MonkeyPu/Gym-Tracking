@@ -277,7 +277,7 @@ export default function DayRoutinePage({ params }: { params: { day: string } }) 
     <div className="space-y-4">
        <div className="flex items-center gap-2">
         <Button asChild variant="ghost" size="icon">
-          <Link href="/routine-creator"><ArrowLeft /></Link>
+          <Link href="/dashboard"><ArrowLeft /></Link>
         </Button>
         <h1 className="text-lg font-bold">{day}'s Routine</h1>
       </div>
