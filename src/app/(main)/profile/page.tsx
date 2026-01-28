@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -14,6 +14,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { UserProfile } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Trash2 } from 'lucide-react';
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile>({ name: '', weight: 0, height: 0 });
@@ -23,7 +35,12 @@ export default function ProfilePage() {
   useEffect(() => {
     const savedProfile = localStorage.getItem('user-profile');
     if (savedProfile) {
-      setProfile(JSON.parse(savedProfile));
+      try {
+        setProfile(JSON.parse(savedProfile));
+      } catch (e) {
+        console.error("Failed to parse user profile from localStorage.", e);
+        localStorage.removeItem('user-profile');
+      }
     }
     setIsLoaded(true);
   }, []);
@@ -44,6 +61,23 @@ export default function ProfilePage() {
     }));
   };
 
+  const handleClearData = () => {
+    localStorage.removeItem('user-profile');
+    localStorage.removeItem('user-schedule');
+    localStorage.removeItem('user-routines');
+    localStorage.removeItem('user-workout-logs');
+    localStorage.removeItem('user-personal-records');
+    
+    toast({
+      title: "Data Cleared",
+      description: "All your data has been removed. The app will now reload.",
+      variant: "destructive"
+    });
+
+    // Reload the page to reset all component states across the app
+    setTimeout(() => window.location.reload(), 1500);
+  };
+
   if (!isLoaded) {
     return <div>Loading...</div>;
   }
@@ -62,7 +96,7 @@ export default function ProfilePage() {
               id="name"
               name="name"
               type="text"
-              value={profile.name}
+              value={profile.name || ''}
               onChange={handleChange}
               placeholder="e.g., Alex"
             />
@@ -92,6 +126,44 @@ export default function ProfilePage() {
         </CardContent>
         <CardFooter>
           <Button onClick={handleSave}>Save Profile</Button>
+        </CardFooter>
+      </Card>
+
+      <Card className="border-destructive">
+        <CardHeader>
+          <CardTitle>Danger Zone</CardTitle>
+          <CardDescription>
+            Permanently delete all your app data. This action cannot be undone.
+          </CardDescription>
+        </CardHeader>
+        <CardFooter>
+           <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">
+                <Trash2 className="mr-2 h-4 w-4" />
+                Clear All Data
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will permanently delete all your app data, including your
+                  profile, routines, logs, and personal records. This action
+                  cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  className={buttonVariants({ variant: "destructive" })}
+                  onClick={handleClearData}
+                >
+                  Yes, delete everything
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </CardFooter>
       </Card>
     </div>
